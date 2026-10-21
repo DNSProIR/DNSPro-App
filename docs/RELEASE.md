@@ -16,7 +16,7 @@ git push origin v0.1.0
 
 | Asset | Platform |
 |-------|----------|
-| Windows publish folder / EXE | Windows |
+| `DNSPro-Windows-x64.zip` | Windows |
 | `DNSPro-Linux-x86_64` binary, `.deb`, `.rpm` | Linux |
 | `DNSPro-Android.apk` | Android |
 

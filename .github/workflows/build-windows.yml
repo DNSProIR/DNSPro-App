@@ -30,8 +30,13 @@ jobs:
         run: dotnet build -c Release -r win-x64 --no-restore
       - name: Publish
         run: dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ../../artifacts/windows
+      - name: Create ZIP
+        shell: pwsh
+        run: |
+          Remove-Item ../../artifacts/windows/*.pdb -ErrorAction SilentlyContinue
+          Compress-Archive -Path ../../artifacts/windows/* -DestinationPath ../../artifacts/DNSPro-Windows-x64.zip -Force
       - uses: actions/upload-artifact@v5
         with:
           name: windows-build
-          path: artifacts/windows
-          if-no-files-found: warn
+          path: artifacts/DNSPro-Windows-x64.zip
+          if-no-files-found: error

@@ -34,18 +34,22 @@ jobs:
       - name: Prepare release assets
         run: |
           mkdir -p release
-          find artifacts -type f \( -name "*.exe" -o -name "*.msix" -o -name "dnspro" -o -name "DNSPro*" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.dll" \) -exec cp -n {} release/ \; 2>/dev/null || true
-          # Prefer copying whole publish folders for Windows
-          if [ -d artifacts/windows-build ]; then
-            cp -a artifacts/windows-build/. release/ 2>/dev/null || true
-          fi
-          ls -laR artifacts || true
-          ls -la release || true
-          if [ -f release/dnspro ]; then mv -f release/dnspro release/DNSPro-Linux-x86_64 || true; fi
-          if ls release/*.apk 1>/dev/null 2>&1; then
-            first_apk=$(ls release/*.apk | head -n1)
-            cp -f "$first_apk" release/DNSPro-Android.apk
-          fi
+          ls -laR artifacts
+
+          # Windows: single zip only
+          find artifacts -type f -name 'DNSPro-Windows-x64.zip' -exec cp -f {} release/ \;
+
+          # Linux binary
+          find artifacts -type f -name 'dnspro' -exec cp -f {} release/DNSPro-Linux-x86_64 \;
+          find artifacts -type f -name 'DNSPro-Linux-x86_64' -exec cp -f {} release/ \;
+          find artifacts -type f \( -name '*.deb' -o -name '*.rpm' -o -name '*.AppImage' \) -exec cp -f {} release/ \;
+
+          # Android APK (prefer renamed copy)
+          find artifacts -type f -name '*.apk' | head -n1 | while read -r apk; do
+            cp -f "$apk" release/DNSPro-Android.apk
+          done
+
+          ls -la release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:

@@ -27,9 +27,9 @@ Default DNS (IPv4): **`80.244.11.244`** (configured in [`shared/dns-config.json`
 
 See [GitHub Releases](https://github.com/DNSProIR/DNSPro-App/releases) for:
 
-- Windows installer / portable EXE
-- Linux AppImage, `.deb`, `.rpm`
-- Android APK
+- Windows: `DNSPro-Windows-x64.zip`
+- Linux AppImage, `.deb`, `.rpm` / binary
+- Android: `DNSPro-Android.apk`
 
 ### Linux quick start
 
