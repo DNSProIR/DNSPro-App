@@ -30,13 +30,16 @@ jobs:
         with:
           gradle-version: "8.9"
       - name: Decode release keystore
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "No ANDROID_KEYSTORE_BASE64 secret; skipping release signing setup."
+            exit 0
+          fi
           echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > dnspro-release.keystore
           cat > keystore.properties <<EOF
           STORE_FILE=dnspro-release.keystore
@@ -44,17 +47,14 @@ jobs:
           KEY_ALIAS=${ANDROID_KEY_ALIAS}
           KEY_PASSWORD=${ANDROID_KEY_PASSWORD}
           EOF
-      - name: Assemble release APK
-        id: assemble
+      - name: Assemble APK
         run: |
           if [ -f keystore.properties ]; then
+            echo "Building signed release APK..."
             gradle assembleRelease --no-daemon
-            echo "signed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No release keystore secrets; building unsigned is not used for stores."
-            echo "Building debug APK for CI artifact only."
+            echo "Building debug APK (no release keystore configured)..."
             gradle assembleDebug --no-daemon
-            echo "signed=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Collect APK
         run: |
