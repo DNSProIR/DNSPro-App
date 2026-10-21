@@ -35,8 +35,10 @@ apps/linux/dnspro.exe
 apps/android/.cxx/
 apps/android/app/release/
 apps/android/captures/
+apps/android/keystore.properties
 *.keystore
 !debug.keystore
+!apps/android/keystore.properties.example
 
 # Secrets
 .env

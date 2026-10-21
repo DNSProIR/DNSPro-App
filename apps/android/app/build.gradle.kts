@@ -1,8 +1,21 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+fun prop(name: String): String? =
+    keystoreProperties.getProperty(name)?.takeIf { it.isNotBlank() }
+        ?: System.getenv(name)?.takeIf { it.isNotBlank() }
 
 android {
     namespace = "ir.dnspro.app"
@@ -16,6 +29,26 @@ android {
         versionName = "0.1.0"
     }
 
+    signingConfigs {
+        val storeFilePath = prop("DNSPro_STORE_FILE") ?: prop("STORE_FILE")
+        val storePassword = prop("DNSPro_STORE_PASSWORD") ?: prop("STORE_PASSWORD")
+        val keyAlias = prop("DNSPro_KEY_ALIAS") ?: prop("KEY_ALIAS")
+        val keyPassword = prop("DNSPro_KEY_PASSWORD") ?: prop("KEY_PASSWORD")
+
+        if (!storeFilePath.isNullOrBlank()
+            && !storePassword.isNullOrBlank()
+            && !keyAlias.isNullOrBlank()
+            && !keyPassword.isNullOrBlank()
+        ) {
+            create("release") {
+                storeFile = file(storeFilePath)
+                this.storePassword = storePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -23,6 +56,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
 

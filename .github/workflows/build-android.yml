@@ -29,12 +29,41 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: "8.9"
-      - name: Assemble debug APK
-        run: gradle assembleDebug --no-daemon
+      - name: Decode release keystore
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > dnspro-release.keystore
+          cat > keystore.properties <<EOF
+          STORE_FILE=dnspro-release.keystore
+          STORE_PASSWORD=${ANDROID_STORE_PASSWORD}
+          KEY_ALIAS=${ANDROID_KEY_ALIAS}
+          KEY_PASSWORD=${ANDROID_KEY_PASSWORD}
+          EOF
+      - name: Assemble release APK
+        id: assemble
+        run: |
+          if [ -f keystore.properties ]; then
+            gradle assembleRelease --no-daemon
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release keystore secrets; building unsigned is not used for stores."
+            echo "Building debug APK for CI artifact only."
+            gradle assembleDebug --no-daemon
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Collect APK
         run: |
           mkdir -p ../../artifacts/android
-          find . -name "*.apk" -exec cp {} ../../artifacts/android/ \;
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            cp app/build/outputs/apk/release/app-release.apk ../../artifacts/android/DNSPro-Android.apk
+          else
+            find . -path '*/apk/debug/*.apk' -exec cp {} ../../artifacts/android/DNSPro-Android-debug.apk \;
+          fi
       - uses: actions/upload-artifact@v5
         with:
           name: android-build

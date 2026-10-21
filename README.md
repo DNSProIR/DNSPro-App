@@ -12,7 +12,7 @@ Official open-source clients for [DNSPro](https://dnspro.ir) — a fast DNS serv
 |----------|------|--------|
 | Windows | [`apps/windows`](apps/windows) | WPF (.NET 8) — sets system DNS (admin) |
 | Linux | [`apps/linux`](apps/linux) | Go + Fyne — AppImage, `.deb`, `.rpm` |
-| Android | [`apps/android`](apps/android) | Kotlin — DNS-only local VPN |
+| Android | [`apps/android`](apps/android) | Kotlin — DNS-only local VPN (release-signed for Cafe Bazaar) |
 
 Default DNS (IPv4): **`80.244.11.244`** (configured in [`shared/dns-config.json`](shared/dns-config.json)).
 

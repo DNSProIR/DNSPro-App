@@ -22,6 +22,7 @@ jobs:
     uses: ./.github/workflows/build-linux.yml
   android:
     uses: ./.github/workflows/build-android.yml
+    secrets: inherit
 
   publish:
     needs: [windows, linux, android]
