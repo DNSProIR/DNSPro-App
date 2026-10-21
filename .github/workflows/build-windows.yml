@@ -1,0 +1,37 @@
+name: Build Windows
+
+on:
+  push:
+    paths:
+      - "apps/windows/**"
+      - "shared/**"
+      - ".github/workflows/build-windows.yml"
+  pull_request:
+    paths:
+      - "apps/windows/**"
+      - "shared/**"
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: apps/windows
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "8.0.x"
+      - name: Restore
+        run: dotnet restore -r win-x64
+      - name: Build
+        run: dotnet build -c Release -r win-x64 --no-restore
+      - name: Publish
+        run: dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ../../artifacts/windows
+      - uses: actions/upload-artifact@v5
+        with:
+          name: windows-build
+          path: artifacts/windows
+          if-no-files-found: warn

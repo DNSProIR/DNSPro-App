@@ -1,0 +1,45 @@
+name: Build Linux
+
+on:
+  push:
+    paths:
+      - "apps/linux/**"
+      - "shared/**"
+      - ".github/workflows/build-linux.yml"
+  pull_request:
+    paths:
+      - "apps/linux/**"
+      - "shared/**"
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/linux
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.x"
+      - name: Install GUI deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev xorg-dev gcc libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev
+      - name: Tidy & build
+        run: |
+          go mod tidy
+          mkdir -p ../../artifacts/linux
+          CGO_ENABLED=1 go build -ldflags "-s -w" -o ../../artifacts/linux/dnspro .
+          cp ../../shared/dns-config.json ../../artifacts/linux/
+          cp packaging/dnspro.desktop ../../artifacts/linux/
+      - name: Package deb
+        run: |
+          chmod +x packaging/build.sh || true
+          OUT=../../artifacts/linux VERSION=${{ github.ref_name }} ./packaging/build.sh || true
+      - uses: actions/upload-artifact@v5
+        with:
+          name: linux-build
+          path: artifacts/linux

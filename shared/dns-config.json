@@ -1,0 +1,12 @@
+{
+  "serviceName": "DNSPro",
+  "primaryIPv4": "80.244.11.244",
+  "secondaryIPv4": "80.244.11.244",
+  "primaryIPv6": "",
+  "secondaryIPv6": "",
+  "checkHost": "dnspro.ir",
+  "websiteUrl": "https://dnspro.ir",
+  "telegramUrl": "https://t.me/dnspro_ir",
+  "email": "we@dnspro.ir",
+  "disclaimer": "DNSPro helps you reach sanction-restricted websites and provides Safe Family filtering. It is not intended for bypassing government filtering."
+}

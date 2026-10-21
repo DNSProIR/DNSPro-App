@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DNSPro</string>
+    <string name="tagline">Fast, secure DNS for sanction access and Safe Family protection</string>
+    <string name="enable">Enable DNSPro</string>
+    <string name="disable">Disable DNSPro</string>
+    <string name="status_active">Status: Active</string>
+    <string name="status_inactive">Status: Inactive</string>
+    <string name="check_connection">Check connection</string>
+    <string name="vpn_hint">Android uses a local VPN only to route DNS queries to DNSPro. No browsing traffic is logged by this app.</string>
+    <string name="notification_title">DNSPro is active</string>
+    <string name="notification_text">DNS queries are routed to DNSPro</string>
+    <string name="disclaimer">DNSPro helps you reach sanction-restricted websites and provides Safe Family filtering. It is not intended for bypassing government filtering.</string>
+</resources>

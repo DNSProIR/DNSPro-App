@@ -1,0 +1,21 @@
+{
+  "appName": "DNSPro",
+  "tagline": "Fast, secure DNS for sanction access and Safe Family protection",
+  "enable": "Enable DNSPro",
+  "disable": "Disable DNSPro",
+  "statusActive": "Status: Active",
+  "statusInactive": "Status: Inactive",
+  "statusNeedsPermission": "Status: Needs permission",
+  "checkConnection": "Check connection",
+  "checkSuccess": "DNSPro is reachable",
+  "checkFailure": "Could not verify DNSPro",
+  "checking": "Checking…",
+  "website": "Website",
+  "telegram": "Telegram",
+  "email": "Email",
+  "disclaimer": "DNSPro helps you reach sanction-restricted websites and provides Safe Family filtering. It is not intended for bypassing government filtering.",
+  "vpnPermissionHint": "Android uses a local VPN only to route DNS queries to DNSPro. No browsing traffic is logged by this app.",
+  "about": "About",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "elevating": "Administrator permission required…"
+}

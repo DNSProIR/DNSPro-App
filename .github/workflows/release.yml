@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version tag (e.g. v0.1.0)"
+        required: true
+        default: "v0.1.0"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    uses: ./.github/workflows/build-windows.yml
+  linux:
+    uses: ./.github/workflows/build-linux.yml
+  android:
+    uses: ./.github/workflows/build-android.yml
+
+  publish:
+    needs: [windows, linux, android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+      - name: Prepare release assets
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name "*.exe" -o -name "*.msix" -o -name "dnspro" -o -name "DNSPro*" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.apk" -o -name "*.dll" \) -exec cp -n {} release/ \; 2>/dev/null || true
+          # Prefer copying whole publish folders for Windows
+          if [ -d artifacts/windows-build ]; then
+            cp -a artifacts/windows-build/. release/ 2>/dev/null || true
+          fi
+          ls -laR artifacts || true
+          ls -la release || true
+          if [ -f release/dnspro ]; then mv -f release/dnspro release/DNSPro-Linux-x86_64 || true; fi
+          if ls release/*.apk 1>/dev/null 2>&1; then
+            first_apk=$(ls release/*.apk | head -n1)
+            cp -f "$first_apk" release/DNSPro-Android.apk
+          fi
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+          name: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+          generate_release_notes: true
+          files: |
+            release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,44 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.user
+*.suo
+
+# Shared / build
+**/bin/
+**/obj/
+**/build/
+**/dist/
+**/.gradle/
+**/local.properties
+**/*.apk
+**/*.aab
+**/*.ipa
+**/*.AppImage
+**/*.deb
+**/*.rpm
+**/node_modules/
+
+# .NET
+*.dll
+*.exe
+!tools/**
+packages/
+
+# Go
+apps/linux/dnspro
+apps/linux/dnspro.exe
+
+# Android
+apps/android/.cxx/
+apps/android/app/release/
+apps/android/captures/
+*.keystore
+!debug.keystore
+
+# Secrets
+.env
+*.pem
+*.p12
