@@ -15,15 +15,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: apps/linux
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.22.x"
+          cache-dependency-path: apps/linux/go.sum
       - name: Install GUI deps
         run: |
           sudo apt-get update
@@ -39,7 +40,7 @@ jobs:
         run: |
           chmod +x packaging/build.sh || true
           OUT=../../artifacts/linux VERSION=${{ github.ref_name }} ./packaging/build.sh || true
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: linux-build
           path: artifacts/linux

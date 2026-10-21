@@ -20,7 +20,7 @@ jobs:
       run:
         working-directory: apps/windows
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8.0.x"
@@ -35,7 +35,7 @@ jobs:
         run: |
           Remove-Item ../../artifacts/windows/*.pdb -ErrorAction SilentlyContinue
           Compress-Archive -Path ../../artifacts/windows/* -DestinationPath ../../artifacts/DNSPro-Windows-x64.zip -Force
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: windows-build
           path: artifacts/DNSPro-Windows-x64.zip

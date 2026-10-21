@@ -26,10 +26,10 @@ jobs:
 
   publish:
     needs: [windows, linux, android]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v6
         with:
           path: artifacts
       - name: Prepare release assets
@@ -52,7 +52,7 @@ jobs:
 
           ls -la release
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
           name: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
